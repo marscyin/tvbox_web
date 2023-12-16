@@ -261,6 +261,22 @@ func main() {
 		c.String(200, Go_SearchContent(etd, key, spider_file_path))
 		return
 	})
+	r.GET("/", func(c *gin.Context) {
+		c.File("./html/" + "index.html")
+	})
+	r.GET("/:html", func(c *gin.Context) {
+		html := c.Param("html")
+		c.File("./html/" + html)
+	})
+	r.GET("/js/:js", func(c *gin.Context) {
+		js := c.Param("js")
+		c.File("./html/js/" + js)
+	})
+	r.GET("/css/:css", func(c *gin.Context) {
+		css := c.Param("css")
+		c.File("./html/css/" + css)
+	})
+
 	// 启动HTTP服务，默认在0.0.0.0:8080启动服务
 	r.Run(":9987")
 }
