@@ -44,6 +44,9 @@ window.onload = function () {
   xhr.send()
   //加载函数
   type_name_onclick = function (click_id) {
+    while (homeContent_filter.firstChild) {
+      homeContent_filter.removeChild(homeContent_filter.firstChild)
+    }
     var flr = filter[click_id]
     for (i = 0; i < flr.length; i++) {
       k = flr[i]['key']
@@ -52,6 +55,8 @@ window.onload = function () {
       // console.log(k)
       var span = document.createElement('span')
       var div_null = document.createElement('div')
+      div_null.setAttribute('filter_key', k)
+      div_null.setAttribute('filter_name', n)
       span.setAttribute('id', k)
       span.setAttribute('key', k)
       span.setAttribute('class', 'filter_name')
@@ -68,5 +73,7 @@ window.onload = function () {
 
       homeContent_filter.appendChild(div_null)
     }
+    var hr = document.createElement('hr')
+    homeContent_filter.appendChild(hr)
   }
 }
