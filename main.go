@@ -12,6 +12,7 @@ import (
 
 func Go_HomeContent(etd string, filter bool, file_name string) string {
 	M := make(map[string]interface{})
+	R := make(map[string]interface{})
 	flr := "False"
 	if filter {
 		flr = "True"
@@ -19,9 +20,11 @@ func Go_HomeContent(etd string, filter bool, file_name string) string {
 	head, file_name := filepath.Split(file_name)
 	File_Name_Remove_py := strings.TrimSuffix(file_name, ".py")
 	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import homeContent,init;init(\""+etd+"\");homeContent("+flr+")")
-	fmt.Println(cmd)
+	// fmt.Println(cmd)
 	content, err := cmd.Output()
-	if err != nil {
+	e := json.Unmarshal([]byte(content), &R)
+
+	if err != nil || e != nil {
 		M["code"] = 0
 		M["message"] = "homeContent运行出错，请检查!!!"
 		M["data"] = err.Error()
@@ -30,7 +33,7 @@ func Go_HomeContent(etd string, filter bool, file_name string) string {
 	} else {
 		M["code"] = 1
 		M["message"] = "success"
-		M["data"] = strings.TrimSpace(string(content))
+		M["data"] = R
 	}
 	jstr, err := json.Marshal(M)
 	if err != nil {
@@ -42,6 +45,7 @@ func Go_HomeContent(etd string, filter bool, file_name string) string {
 
 func Go_CategoryContent(etd string, tid string, pg string, filter bool, extend string, file_name string) string {
 	M := make(map[string]interface{})
+	R := make(map[string]interface{})
 	flr := "False"
 	if filter {
 		flr = "True"
@@ -50,7 +54,8 @@ func Go_CategoryContent(etd string, tid string, pg string, filter bool, extend s
 	File_Name_Remove_py := strings.TrimSuffix(file_name, ".py")
 	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import categoryContent,init;init(\""+etd+"\");categoryContent(\""+tid+"\",\""+pg+"\","+flr+",\""+extend+"\")")
 	content, err := cmd.Output()
-	if err != nil {
+	e := json.Unmarshal([]byte(content), &R)
+	if err != nil || e != nil {
 		M["code"] = 0
 		M["message"] = "categoryContent运行出错，请检查!!!"
 		M["data"] = err.Error()
@@ -71,11 +76,13 @@ func Go_CategoryContent(etd string, tid string, pg string, filter bool, extend s
 
 func Go_DetailContent(etd string, ids string, file_name string) string {
 	M := make(map[string]interface{})
+	R := make(map[string]interface{})
 	head, file_name := filepath.Split(file_name)
 	File_Name_Remove_py := strings.TrimSuffix(file_name, ".py")
 	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import detailContent,init;init(\""+etd+"\");detailContent(\""+ids+"\")")
 	content, err := cmd.Output()
-	if err != nil {
+	e := json.Unmarshal([]byte(content), &R)
+	if err != nil || e != nil {
 		M["code"] = 0
 		M["message"] = "detailContent运行出错，请检查!!!"
 		M["data"] = err.Error()
@@ -96,11 +103,13 @@ func Go_DetailContent(etd string, ids string, file_name string) string {
 
 func Go_PlayerContent(etd string, flag string, id string, file_name string) string {
 	M := make(map[string]interface{})
+	R := make(map[string]interface{})
 	head, file_name := filepath.Split(file_name)
 	File_Name_Remove_py := strings.TrimSuffix(file_name, ".py")
 	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import playerContent,init;init(\""+etd+"\");playerContent(\""+flag+"\",\""+id+"\")")
 	content, err := cmd.Output()
-	if err != nil {
+	e := json.Unmarshal([]byte(content), &R)
+	if err != nil || e != nil {
 		M["code"] = 0
 		M["message"] = "playerContent运行出错，请检查!!!"
 		M["data"] = err.Error()
@@ -121,11 +130,13 @@ func Go_PlayerContent(etd string, flag string, id string, file_name string) stri
 
 func Go_SearchContent(etd string, key string, file_name string) string {
 	M := make(map[string]interface{})
+	R := make(map[string]interface{})
 	head, file_name := filepath.Split(file_name)
 	File_Name_Remove_py := strings.TrimSuffix(file_name, ".py")
 	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import searchContent,init;init(\""+etd+"\");searchContent(\""+key+"\")")
 	content, err := cmd.Output()
-	if err != nil {
+	e := json.Unmarshal([]byte(content), &R)
+	if err != nil || e != nil {
 		M["code"] = 0
 		M["message"] = "searchContent运行出错，请检查!!!"
 		M["data"] = err.Error()
@@ -260,6 +271,11 @@ func main() {
 		}
 		c.String(200, Go_SearchContent(etd, key, spider_file_path))
 		return
+	})
+	r.GET("/proxy", func(c *gin.Context) {
+		url := c.Query("url")
+		header := c.Query("header")
+		c.String(200, url+"\n"+header)
 	})
 	r.GET("/", func(c *gin.Context) {
 		c.File("./html/" + "index.html")
