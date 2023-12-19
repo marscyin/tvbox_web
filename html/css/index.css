@@ -20,3 +20,18 @@
   line-height: 1.5;
   color: #5fb3ce;
 }
+.check_type_name {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: red;
+}
+.filter_value {
+}
+.check_filter_value {
+  color: red;
+}
