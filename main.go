@@ -52,7 +52,7 @@ func Go_CategoryContent(etd string, tid string, pg string, filter bool, extend s
 	}
 	head, file_name := filepath.Split(file_name)
 	File_Name_Remove_py := strings.TrimSuffix(file_name, ".py")
-	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import categoryContent,init;init(\""+etd+"\");categoryContent(\""+tid+"\",\""+pg+"\","+flr+",\""+extend+"\")")
+	cmd := exec.Command("python3", "-c", "import sys;sys.path.append(\""+head+"\");from "+File_Name_Remove_py+" import categoryContent,init;init(\""+etd+"\");categoryContent(\""+tid+"\",\""+pg+"\","+flr+",'"+extend+"')")
 	content, err := cmd.Output()
 	e := json.Unmarshal([]byte(content), &R)
 	if err != nil || e != nil {

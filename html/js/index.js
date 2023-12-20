@@ -144,6 +144,9 @@ window.onload = function () {
     // alert(parentId + ':' + value)
     element_pId = document.getElementById(parentId)
     element_click_filter_id = document.getElementById(fid)
+    element_check_type_name_id = document
+      .getElementsByClassName('check_type_name')[0]
+      .getAttribute('tid')
 
     // console.log(element_click_filter_id)
 
@@ -160,7 +163,48 @@ window.onload = function () {
       eid_list = elements_filters[i].id.split('$$$$$')
       flr_obj[eid_list[0]] = eid_list[1]
     }
-    console.log(flr_obj)
+    // console.log(flr_obj)
+
+    while (categoryContent.firstChild) {
+      categoryContent.removeChild(categoryContent.firstChild)
+    }
+
+    var xhr_category_filter = new XMLHttpRequest()
+    var category_filter_url =
+      'http://localhost:9987/categoryContent?spider_file_path=' +
+      spider_file_path +
+      '&tid=' +
+      element_check_type_name_id +
+      '&extend=' +
+      JSON.stringify(flr_obj) +
+      '&pg=1'
+    xhr_category_filter.open('GET', category_filter_url)
+    xhr_category_filter.responseType = 'json'
+    xhr_category_filter.onload = function () {
+      res = xhr_category_filter.response
+      if (res['code'] == 1) {
+        list = res['data']['list']
+        for (i = 0; i < list.length; i++) {
+          var a_table = document.createElement('a')
+          var pic_table = document.createElement('img')
+          var name_table = document.createElement('span')
+          var div_table = document.createElement('div')
+          div_table.setAttribute('class', 'div_vod')
+          div_table.setAttribute('url', category_filter_url.slice(0, -1))
+          div_table.setAttribute('pg', '1')
+
+          pic_table.setAttribute('src', list[i]['vod_pic'])
+
+          name_table.innerText = list[i]['vod_name']
+          a_table.appendChild(pic_table)
+          // a_table.appendChild(br_table)
+          div_table.appendChild(a_table)
+          div_table.appendChild(name_table)
+          categoryContent.appendChild(div_table)
+        }
+      }
+    }
+    xhr_category_filter.send()
   }
   // document.body.addEventListener('scroll', function () {
   // console.log('aa')
@@ -171,10 +215,57 @@ window.onload = function () {
     var dh = document.documentElement.clientHeight
     // console.log(scrolltop + dh)
     var body_offsetH = document.documentElement.offsetHeight
-    console.log(body_offsetH)
-    console.log(scrolltop + dh)
-    if (scrolltop + dh >= body_offsetH - 5) {
-      console.log('到底部咯')
+    // console.log(body_offsetH)
+    // console.log(scrolltop + dh)
+    if (scrolltop + dh >= body_offsetH - 10) {
+      // console.log('到底部咯')
+      // alert('到底了')
+      let last_vod = categoryContent.lastElementChild
+      let u = last_vod.getAttribute('url')
+      let p = last_vod.getAttribute('pg')
+      let new_pg = parseInt(p) + 1
+      let url_cate = u + new_pg.toString()
+      // console.log(url_cate)
+
+      var xhr_categorys = new XMLHttpRequest()
+      xhr_categorys.open('GET', url_cate)
+      console.log('正在请求-->' + url_cate)
+      xhr_categorys.responseType = 'json'
+      xhr_categorys.onload = function () {
+        let res = xhr_categorys.response
+        if (res['code'] == 1) {
+          let last_vod_new = categoryContent.lastElementChild
+          let p_new = last_vod_new.getAttribute('pg')
+          // console.log(p_new)
+          // console.log(last_vod_new)
+          if (p_new === p) {
+            list = res['data']['list']
+
+            for (i = 0; i < list.length; i++) {
+              var a_table = document.createElement('a')
+              var pic_table = document.createElement('img')
+              var name_table = document.createElement('span')
+              var div_table = document.createElement('div')
+              div_table.setAttribute('class', 'div_vod')
+              div_table.setAttribute('url', u)
+              div_table.setAttribute('pg', new_pg)
+
+              pic_table.setAttribute('src', list[i]['vod_pic'])
+
+              name_table.innerText = list[i]['vod_name']
+              a_table.appendChild(pic_table)
+              // a_table.appendChild(br_table)
+              div_table.appendChild(a_table)
+              div_table.appendChild(name_table)
+              categoryContent.appendChild(div_table)
+              // console.log(list)
+            }
+          }
+        }
+      }
+      xhr_categorys.send()
+      // console.log(old_pg)
+      // var categoryContent_urls =
     }
   }
 }
