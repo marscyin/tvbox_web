@@ -62,9 +62,9 @@ func Go_CategoryContent(etd string, tid string, pg string, filter bool, extend s
 		fmt.Printf("%v\n", cmd)
 
 	} else {
-		M["code"] = 0
+		M["code"] = 1
 		M["message"] = "success"
-		M["data"] = strings.TrimSpace(string(content))
+		M["data"] = R
 	}
 	jstr, err := json.Marshal(M)
 	if err != nil {
@@ -91,7 +91,7 @@ func Go_DetailContent(etd string, ids string, file_name string) string {
 	} else {
 		M["code"] = 0
 		M["message"] = "success"
-		M["data"] = strings.TrimSpace(string(content))
+		M["data"] = R
 	}
 	jstr, err := json.Marshal(M)
 	if err != nil {
@@ -118,7 +118,7 @@ func Go_PlayerContent(etd string, flag string, id string, file_name string) stri
 	} else {
 		M["code"] = 0
 		M["message"] = "success"
-		M["data"] = strings.TrimSpace(string(content))
+		M["data"] = R
 	}
 	jstr, err := json.Marshal(M)
 	if err != nil {
@@ -145,7 +145,7 @@ func Go_SearchContent(etd string, key string, file_name string) string {
 	} else {
 		M["code"] = 0
 		M["message"] = "success"
-		M["data"] = strings.TrimSpace(string(content))
+		M["data"] = R
 	}
 	jstr, err := json.Marshal(M)
 	if err != nil {

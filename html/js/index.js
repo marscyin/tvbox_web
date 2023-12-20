@@ -1,12 +1,14 @@
+var spider_file_path = '/root/go/src/TvBox/NanGua.py'
 window.onload = function () {
   var filter = {}
   var homeContent = document.getElementById('homeContent')
   var homeContent_filter = document.getElementById('homeContent_filter')
+  var categoryContent = document.getElementById('categoryContent')
 
   var xhr = new XMLHttpRequest()
   xhr.open(
     'GET',
-    'http://localhost:9987/homeContent?spider_file_path=/root/go/src/TvBox/NanGua.py',
+    'http://localhost:9987/homeContent?spider_file_path=' + spider_file_path,
   )
   xhr.responseType = 'json'
   xhr.onload = function () {
@@ -94,13 +96,56 @@ window.onload = function () {
     }
     var hr = document.createElement('hr')
     homeContent_filter.appendChild(hr)
+    //筛选页面加载完成
+    while (categoryContent.firstChild) {
+      categoryContent.removeChild(categoryContent.firstChild)
+    }
+    var xhr_category = new XMLHttpRequest()
+    var categoryContent_url =
+      'http://localhost:9987/categoryContent?spider_file_path=' +
+      spider_file_path +
+      '&tid=' +
+      click_id +
+      '&pg=1'
+    xhr_category.open('GET', categoryContent_url)
+    xhr_category.responseType = 'json'
+    xhr_category.onload = function () {
+      res = xhr_category.response
+      if (res['code'] == 1) {
+        list = res['data']['list']
+        // console.log(list)
+        for (i = 0; i < list.length; i++) {
+          var a_table = document.createElement('a')
+          var pic_table = document.createElement('img')
+          var name_table = document.createElement('span')
+          var div_table = document.createElement('div')
+          div_table.setAttribute('class', 'div_vod')
+          div_table.setAttribute('url', categoryContent_url.slice(0, -1))
+          div_table.setAttribute('pg', '1')
+
+          pic_table.setAttribute('src', list[i]['vod_pic'])
+
+          name_table.innerText = list[i]['vod_name']
+          a_table.appendChild(pic_table)
+          // a_table.appendChild(br_table)
+          div_table.appendChild(a_table)
+          div_table.appendChild(name_table)
+          categoryContent.appendChild(div_table)
+          // console.log(list[i]['vod_name'])
+        }
+      } else {
+        console.log('获取categoryContent参数失败!!!')
+        return
+      }
+    }
+    xhr_category.send()
   }
   filter_onclick = function (parentId, fid) {
     // alert(parentId + ':' + value)
     element_pId = document.getElementById(parentId)
     element_click_filter_id = document.getElementById(fid)
 
-    console.log(element_click_filter_id)
+    // console.log(element_click_filter_id)
 
     for (var i = 1; i < element_pId.children.length; i++) {
       var child = element_pId.children[i]
@@ -109,5 +154,27 @@ window.onload = function () {
     }
 
     element_click_filter_id.setAttribute('class', 'check_filter_value')
+    elements_filters = document.getElementsByClassName('check_filter_value')
+    flr_obj = {}
+    for (i = 0; i < elements_filters.length; i++) {
+      eid_list = elements_filters[i].id.split('$$$$$')
+      flr_obj[eid_list[0]] = eid_list[1]
+    }
+    console.log(flr_obj)
+  }
+  // document.body.addEventListener('scroll', function () {
+  // console.log('aa')
+  // })
+  window.onscroll = function () {
+    // console.log('aaa')
+    var scrolltop = document.documentElement.scrollTop
+    var dh = document.documentElement.clientHeight
+    // console.log(scrolltop + dh)
+    var body_offsetH = document.documentElement.offsetHeight
+    console.log(body_offsetH)
+    console.log(scrolltop + dh)
+    if (scrolltop + dh >= body_offsetH - 5) {
+      console.log('到底部咯')
+    }
   }
 }

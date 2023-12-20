@@ -35,3 +35,15 @@
 .check_filter_value {
   color: red;
 }
+.div_vod {
+  display: flex;
+  /* align-items: flex-end; */
+  /* 纵向 */
+  flex-direction: column;
+}
+#categoryContent {
+  display: flex;
+  /* 横向 */
+  flex-direction: row;
+  flex-wrap: wrap;
+}
