@@ -116,6 +116,10 @@ window.onload = function () {
         // console.log(list)
         for (i = 0; i < list.length; i++) {
           var a_table = document.createElement('a')
+          a_table.setAttribute(
+            'href',
+            'http://localhost:9987/search.html?key=' + list[i]['vod_name'],
+          )
           var pic_table = document.createElement('img')
           var name_table = document.createElement('span')
           var div_table = document.createElement('div')
@@ -186,6 +190,10 @@ window.onload = function () {
         list = res['data']['list']
         for (i = 0; i < list.length; i++) {
           var a_table = document.createElement('a')
+          a_table.setAttribute(
+            'href',
+            'http://localhost:9987/search.html?key=' + list[i]['vod_name'],
+          )
           var pic_table = document.createElement('img')
           var name_table = document.createElement('span')
           var div_table = document.createElement('div')
@@ -243,6 +251,10 @@ window.onload = function () {
 
             for (i = 0; i < list.length; i++) {
               var a_table = document.createElement('a')
+              a_table.setAttribute(
+                'href',
+                'http://localhost:9987/search.html?key=' + list[i]['vod_name'],
+              )
               var pic_table = document.createElement('img')
               var name_table = document.createElement('span')
               var div_table = document.createElement('div')

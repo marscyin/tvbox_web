@@ -143,7 +143,7 @@ func Go_SearchContent(etd string, key string, file_name string) string {
 		fmt.Printf("%v\n", cmd)
 
 	} else {
-		M["code"] = 0
+		M["code"] = 1
 		M["message"] = "success"
 		M["data"] = R
 	}
