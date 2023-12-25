@@ -1,4 +1,4 @@
-var spider_file_path = '/root/go/src/TvBox/NanGua.py'
+var spider_file_path = '/root/go/src/tvbox_web/python/NanGua.py'
 window.onload = function () {
   var filter = {}
   var homeContent = document.getElementById('homeContent')

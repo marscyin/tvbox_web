@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -89,7 +90,7 @@ func Go_DetailContent(etd string, ids string, file_name string) string {
 		fmt.Printf("%v\n", cmd)
 
 	} else {
-		M["code"] = 0
+		M["code"] = 1
 		M["message"] = "success"
 		M["data"] = R
 	}
@@ -116,7 +117,7 @@ func Go_PlayerContent(etd string, flag string, id string, file_name string) stri
 		fmt.Printf("%v\n", cmd)
 
 	} else {
-		M["code"] = 0
+		M["code"] = 1
 		M["message"] = "success"
 		M["data"] = R
 	}
@@ -126,6 +127,15 @@ func Go_PlayerContent(etd string, flag string, id string, file_name string) stri
 	} else {
 		return string(jstr)
 	}
+}
+
+func Baes64ToStr(b64 string) string {
+	//
+	b, e := base64.StdEncoding.DecodeString(b64)
+	if e != nil {
+		return ""
+	}
+	return string(b)
 }
 
 func Go_SearchContent(etd string, key string, file_name string) string {
@@ -229,7 +239,8 @@ func main() {
 		spider_file_path := c.Query("spider_file_path")
 		etd := c.Query("etd")
 		flag := c.Query("flag")
-		id := c.Query("id")
+		id := Baes64ToStr(c.Query("id"))
+
 		if spider_file_path == "" {
 			c.JSON(200, gin.H{
 				"code":    0,
@@ -241,7 +252,7 @@ func main() {
 		if id == "" {
 			c.JSON(200, gin.H{
 				"code":    0,
-				"message": "没有id的参数!",
+				"message": "没有id的参数!或者Base64解密出错",
 			})
 			return
 

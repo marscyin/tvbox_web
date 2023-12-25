@@ -150,7 +150,12 @@ def playerContent(flag ,id):
         "url":"http://localhost:9987/m3u8/1.m3u8"
 
             }
-    r=requests.get(json_res["data"]["url"],json.loads(json_res["data"]["header"])).text
+    h=json_res["data"]["header"]
+    # gh={
+    #         "User-Agent":h["User-Agent"],
+    #         "IP":h["IP"]
+    #         }
+    r=requests.get(json_res["data"]["url"],headers=h).text
     # printr)
     with open("../m3u8/1.m3u8","w") as file:
         file.write(r)
@@ -218,4 +223,4 @@ def GetTXFiltter():
     return TX
 
 # categoryContent("TX","1",True,"")
-# playerContent("","http://110.42.2.247:8001/analysis/json/?uid=2449&my=acfgikquvzFGJRW459&format=data&url=SMDAxlsKjFXx6goPqdqcZt9dQekx6TWt3YXhNRWhobFlOTEVnPT0")
+playerContent("","http://110.42.2.247:8001/analysis/json/?uid=2449&my=acfgikquvzFGJRW459&format=data&url=SMDAwdbpgeW5ij-I1TLDwF2w7ekx6TXlBTG5JVkkxbFpRZlJRPT0")
