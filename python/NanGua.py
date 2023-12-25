@@ -147,9 +147,13 @@ def playerContent(flag ,id):
     result={
         "parse":0,
         "header":json_res["data"]["header"],
-        "url":json_res["data"]["url"]
+        "url":"http://localhost:9987/m3u8/1.m3u8"
 
             }
+    r=requests.get(json_res["data"]["url"],json.loads(json_res["data"]["header"])).text
+    # printr)
+    with open("../m3u8/1.m3u8","w") as file:
+        file.write(r)
     jstr=json.dumps(result,ensure_ascii=False)
     print(jstr)
 
@@ -214,3 +218,4 @@ def GetTXFiltter():
     return TX
 
 # categoryContent("TX","1",True,"")
+# playerContent("","http://110.42.2.247:8001/analysis/json/?uid=2449&my=acfgikquvzFGJRW459&format=data&url=SMDAxlsKjFXx6goPqdqcZt9dQekx6TWt3YXhNRWhobFlOTEVnPT0")

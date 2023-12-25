@@ -292,6 +292,10 @@ func main() {
 		css := c.Param("css")
 		c.File("./html/css/" + css)
 	})
+	r.GET("/m3u8/:m3u8", func(c *gin.Context) {
+		m3u8 := c.Param("m3u8")
+		c.File("./m3u8/" + m3u8)
+	})
 
 	// 启动HTTP服务，默认在0.0.0.0:8080启动服务
 	r.Run(":9987")
