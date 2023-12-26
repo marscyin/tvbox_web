@@ -4,6 +4,16 @@
   flex-direction: row;
   flex-wrap: wrap;
 }
+.check_purl_span {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: red;
+}
 .purl_span {
   display: inline-block;
   padding: 5px 10px;

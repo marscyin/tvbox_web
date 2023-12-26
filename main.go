@@ -312,7 +312,6 @@ func main() {
     <link href="/css/video-js.min.css" rel="stylesheet" />
     <link href="/css/detailContent.css" rel="stylesheet" />
     <script src="/js/video.min.js"></script>
-    <script src="/js/videojs-contrib-hls.min.js"></script>
   </head>
   <body>
     <video
@@ -331,6 +330,7 @@ func main() {
     <div id="play_url"></div>
   </body>
   <script src="/js/detailContent.js"></script>
+  <script src="/js/play.js"></script>
 </html>
  `
 		c.Header("Content-Type", "text/html")

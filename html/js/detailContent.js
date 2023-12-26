@@ -6,6 +6,7 @@ var host = url.split('?')[0]
 var pu = ''
 var ids = ''
 var uid = ''
+var next_play_switch = false
 if (url.split('?').length > 1) {
   // ids = url.split('=')[1]
   p = url.split('?')[1]
@@ -27,19 +28,26 @@ var click_pf = function (index) {
   pu_list = pu.split('$$$')
   purl_list = pu_list[index].split('#')
   for (i = 0; i < purl_list.length; i++) {
+    uuid = btoa(purl_list[i].split('$')[1])
     var a_table = document.createElement('a')
-    a_table.setAttribute(
-      'href',
-      host + '?ids=' + ids + '&uid=' + btoa(purl_list[i].split('$')[1]),
-    )
+    if (next_play_switch) {
+      a_table.setAttribute('id', 'next_play')
+      next_play_switch = false
+    }
+    a_table.setAttribute('href', host + '?ids=' + ids + '&uid=' + uuid)
     // console.log(purl_list[i].split('$')[1])
     span = document.createElement('span')
     span.innerText = purl_list[i].split('$')[0]
-    span.setAttribute(
-      'onclick',
-      'click_play("' + purl_list[i].split('$')[1] + '")',
-    )
-    span.setAttribute('class', 'purl_span')
+    if (uid === uuid.substring(0, uid.length)) {
+      span.setAttribute('class', 'check_purl_span')
+      next_play_switch = true
+    } else {
+      span.setAttribute('class', 'purl_span')
+      console.log('uuid')
+      console.log(uuid)
+      console.log('uid')
+      console.log(uid)
+    }
     a_table.appendChild(span)
 
     play_url.appendChild(a_table)
