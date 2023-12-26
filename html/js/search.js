@@ -1,4 +1,4 @@
-var spider_file_path = '/root/go/src/TvBox/NanGua.py'
+var spider_file_path = '/root/go/src/tvbox_web/python/NanGua.py'
 var url = window.location.href
 var key = ''
 

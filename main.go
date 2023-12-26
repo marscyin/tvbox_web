@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tidwall/gjson"
 )
 
 func Go_HomeContent(etd string, filter bool, file_name string) string {
@@ -291,6 +292,51 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.File("./html/" + "index.html")
 	})
+	r.GET("/detailContent.html", func(c *gin.Context) {
+		uid := Baes64ToStr(c.Query("uid"))
+		p_url := ""
+		if uid != "" {
+			res := Go_PlayerContent("", "", uid, "/root/go/src/tvbox_web/python/NanGua.py")
+			p_url = gjson.Get(res, "data.url").String()
+
+		}
+		fmt.Println(uid)
+		h := `
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>播放</title>
+    <link href="/css/video-js.min.css" rel="stylesheet" />
+    <link href="/css/detailContent.css" rel="stylesheet" />
+    <script src="/js/video.min.js"></script>
+    <script src="/js/videojs-contrib-hls.min.js"></script>
+  </head>
+  <body>
+    <video
+      id="my-video"
+      class="video-js vjs-default-skin"
+      controls
+      preload="auto"
+      width="640"
+      height="264"
+      data-setup="{}"
+    >
+ <source src="` + p_url + `" type="application/x-mpegURL" />
+    </video>
+    <hr />
+    <div id="play_from"></div>
+    <div id="play_url"></div>
+  </body>
+  <script src="/js/detailContent.js"></script>
+</html>
+ `
+		c.Header("Content-Type", "text/html")
+		c.String(200, h)
+	})
+
 	r.GET("/:html", func(c *gin.Context) {
 		html := c.Param("html")
 		c.File("./html/" + html)

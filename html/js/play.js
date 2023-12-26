@@ -1,4 +1,6 @@
 var player = videojs('my-video')
+var play_src = document.getElementById('play_src')
+var url = window.location.href
 var spider_file_path = '/root/go/src/tvbox_web/python/NanGua.py'
 
 var click_play = function (url) {
@@ -13,7 +15,6 @@ var click_play = function (url) {
   xhr.onload = function () {
     res = xhr.response
     if (res['code'] == 1) {
-      player.play()
     }
   }
   xhr.send()

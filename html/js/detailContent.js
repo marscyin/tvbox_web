@@ -2,10 +2,23 @@ var spider_file_path = '/root/go/src/TvBox/NanGua.py'
 var play_from = document.getElementById('play_from')
 var play_url = document.getElementById('play_url')
 var url = window.location.href
+var host = url.split('?')[0]
 var pu = ''
 var ids = ''
-if (url.split('=').length > 1) {
-  ids = url.split('=')[1]
+var uid = ''
+if (url.split('?').length > 1) {
+  // ids = url.split('=')[1]
+  p = url.split('?')[1]
+  p_list = p.split('&')
+  for (i = 0; i < p_list.length; i++) {
+    console.log(p_list[i])
+    if (p_list[i].split('=')[0] === 'ids') {
+      ids = p_list[i].split('=')[1]
+    }
+    if (p_list[i].split('=')[0] === 'uid') {
+      uid = p_list[i].split('=')[1]
+    }
+  }
 }
 var click_pf = function (index) {
   while (play_url.firstChild) {
@@ -14,6 +27,12 @@ var click_pf = function (index) {
   pu_list = pu.split('$$$')
   purl_list = pu_list[index].split('#')
   for (i = 0; i < purl_list.length; i++) {
+    var a_table = document.createElement('a')
+    a_table.setAttribute(
+      'href',
+      host + '?ids=' + ids + '&uid=' + btoa(purl_list[i].split('$')[1]),
+    )
+    // console.log(purl_list[i].split('$')[1])
     span = document.createElement('span')
     span.innerText = purl_list[i].split('$')[0]
     span.setAttribute(
@@ -21,7 +40,9 @@ var click_pf = function (index) {
       'click_play("' + purl_list[i].split('$')[1] + '")',
     )
     span.setAttribute('class', 'purl_span')
-    play_url.appendChild(span)
+    a_table.appendChild(span)
+
+    play_url.appendChild(a_table)
   }
 }
 var detail = function (ids) {

@@ -144,21 +144,22 @@ def playerContent(flag ,id):
     
     res_content=requests.get(id,headers=GetNGHeaders(ti)).text
     json_res=json.loads(res_content)
-    result={
-        "parse":0,
-        "header":json_res["data"]["header"],
-        "url":"http://localhost:9987/m3u8/1.m3u8"
-
-            }
+    # print(json_res)
     h=json_res["data"]["header"]
     # gh={
     #         "User-Agent":h["User-Agent"],
     #         "IP":h["IP"]
     #         }
-    r=requests.get(json_res["data"]["url"],headers=h).text
+    r=requests.get(json_res["data"]["url"],headers=h)
+    result={
+        "parse":0,
+        "header":json_res["data"]["header"],
+        "url":r.url
+
+            }
     # printr)
-    with open("../m3u8/1.m3u8","w") as file:
-        file.write(r)
+    with open("/root/go/src/tvbox_web/m3u8/1.m3u8","w") as file:
+        file.write(id)
     jstr=json.dumps(result,ensure_ascii=False)
     print(jstr)
 
@@ -223,4 +224,4 @@ def GetTXFiltter():
     return TX
 
 # categoryContent("TX","1",True,"")
-playerContent("","http://110.42.2.247:8001/analysis/json/?uid=2449&my=acfgikquvzFGJRW459&format=data&url=SMDAwdbpgeW5ij-I1TLDwF2w7ekx6TXlBTG5JVkkxbFpRZlJRPT0")
+# playerContent("","http://110.42.2.247:8001/analysis/json/?uid=2449&my=acfgikquvzFGJRW459&format=data&url=SMDAwdbpgeW5ij-I1TLDwF2w7ekx6TXlBTG5JVkkxbFpRZlJRPT0")
