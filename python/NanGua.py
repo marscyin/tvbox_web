@@ -1,4 +1,5 @@
 import requests
+import base64
 import hashlib
 import json
 from bs4 import BeautifulSoup
@@ -131,7 +132,7 @@ def searchContent(key):
         vod={
             "vod_id":str(item["id"]),
             "vod_name":item["video_name"],
-            "vod_pic":item["img"],
+            "vod_pic":"http://localhost:9987/proxy?url="+ Base64ToStr( item["img"])+"&method="+Base64ToStr("get"),
             "vod_remarks":item["category"]
                 }
         list.append(vod)
@@ -205,6 +206,11 @@ def GetHeaders():
         "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
     }
     return headers
+def Base64ToStr(str):
+    str_bytes=str.encode("utf-8")
+    encoded_str=base64.b64encode(str_bytes)
+    s=encoded_str.decode("utf-8")
+    return s
 def GetTXFiltter():
     #地区
     iarea_value=[{"n":"全部","v":"-1"},{"n":"国内","v":"3"},{"n":"欧美","v":"1"},{"n":"日韩","v":"2"}]
@@ -224,4 +230,5 @@ def GetTXFiltter():
     return TX
 
 # categoryContent("TX","1",True,"")
+# searchContent("汪汪")
 # playerContent("","http://110.42.2.247:8001/analysis/json/?uid=2449&my=acfgikquvzFGJRW459&format=data&url=SMDAwdbpgeW5ij-I1TLDwF2w7ekx6TXlBTG5JVkkxbFpRZlJRPT0")

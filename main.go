@@ -4,6 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -11,6 +13,65 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tidwall/gjson"
 )
+
+func RequestClient(URL string, METHOD string, HEADER string, DATA string) *http.Response {
+	HeaderMap := FormatStr(HEADER)
+	DataMap := FormatStr(DATA)
+	client := &http.Client{}
+	if METHOD == "get" {
+		METHOD = http.MethodGet
+	} else if METHOD == "post" {
+		METHOD = http.MethodPost
+	}
+	FormatData := ""
+	for i, j := range DataMap {
+		FormatData = FormatData + i + "=" + j + "&"
+	}
+	if FormatData != "" {
+		FormatData = FormatData[:len(FormatData)-1]
+	}
+	requset, _ := http.NewRequest(
+		METHOD,
+		URL,
+		strings.NewReader(FormatData),
+	)
+	if METHOD == http.MethodPost && requset.Header.Get("Content-Type") == "" {
+		requset.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
+	requset.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.71 Safari/537.36")
+	for i, j := range HeaderMap {
+		requset.Header.Set(i, j)
+	}
+	resp, err := client.Do(requset)
+	if err != nil {
+		return nil
+	}
+	return resp
+}
+
+func FormatStr(jsonstr string) map[string]string {
+	DataMap := make(map[string]string)
+	Nslice := strings.Split(jsonstr, "\n")
+	for i := 0; i < len(Nslice); i++ {
+		if strings.Index(Nslice[i], ":") != -1 {
+			if strings.TrimSpace(Nslice[i])[:6] == "Origin" {
+
+				a := strings.TrimSpace(Nslice[i][:strings.Index(Nslice[i], ":")])
+				b := strings.TrimSpace(Nslice[i][strings.Index(Nslice[i], ":")+1:])
+				c := strings.Trim(a, "\"")
+				d := strings.Trim(b, "\"")
+				DataMap[c] = d
+			} else {
+				a := strings.TrimSpace(Nslice[i][:strings.LastIndex(Nslice[i], ":")])
+				b := strings.TrimSpace(Nslice[i][strings.LastIndex(Nslice[i], ":")+1:])
+				c := strings.Trim(a, "\"")
+				d := strings.Trim(b, "\"")
+				DataMap[c] = d
+			}
+		}
+	}
+	return DataMap
+}
 
 func Go_HomeContent(etd string, filter bool, file_name string) string {
 	M := make(map[string]interface{})
@@ -130,7 +191,7 @@ func Go_PlayerContent(etd string, flag string, id string, file_name string) stri
 	}
 }
 
-func Baes64ToStr(b64 string) string {
+func Base64ToStr(b64 string) string {
 	//
 	b, e := base64.StdEncoding.DecodeString(b64)
 	if e != nil {
@@ -240,7 +301,7 @@ func main() {
 		spider_file_path := c.Query("spider_file_path")
 		etd := c.Query("etd")
 		flag := c.Query("flag")
-		id := Baes64ToStr(c.Query("id"))
+		id := Base64ToStr(c.Query("id"))
 
 		if spider_file_path == "" {
 			c.JSON(200, gin.H{
@@ -285,15 +346,33 @@ func main() {
 		return
 	})
 	r.GET("/proxy", func(c *gin.Context) {
-		url := c.Query("url")
-		header := c.Query("header")
-		c.String(200, url+"\n"+header)
+		URL := Base64ToStr(c.Query("url"))
+		HEADER := Base64ToStr(c.Query("header"))
+		METHOD := Base64ToStr(c.Query("method"))
+		DATA := Base64ToStr(c.Query("data"))
+		resp := RequestClient(URL, METHOD, HEADER, DATA)
+		if resp == nil {
+			c.String(200, "请求URL:"+URL+"出错!")
+			return
+		}
+		for k, v := range resp.Header {
+			for i := 0; i < len(v); i++ {
+				c.Header(k, v[i])
+			}
+		}
+		body_bit, _ := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+
+		c.String(200, string(body_bit))
+		return
+
+		// c.String(200, res_str)
 	})
 	r.GET("/", func(c *gin.Context) {
 		c.File("./html/" + "index.html")
 	})
 	r.GET("/detailContent.html", func(c *gin.Context) {
-		uid := Baes64ToStr(c.Query("uid"))
+		uid := Base64ToStr(c.Query("uid"))
 		p_url := ""
 		if uid != "" {
 			res := Go_PlayerContent("", "", uid, "/root/go/src/tvbox_web/python/NanGua.py")
@@ -329,6 +408,11 @@ func main() {
     <div id="play_from"></div>
     <div id="play_url"></div>
   </body>
+  <script>
+
+var player = videojs('my-video')
+player.play()
+  </script>
   <script src="/js/detailContent.js"></script>
   <script src="/js/play.js"></script>
 </html>
